@@ -19,48 +19,45 @@ body {
 
 #app {
   display: flex;
-  gap: 24px;
-  padding: 24px;
-  align-items: flex-start;
-}
-
-/* Board */
-#board-container {
-  position: relative;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
 }
 
 #board {
   display: grid;
-  grid-template-columns: repeat(8, 72px);
-  grid-template-rows: repeat(8, 72px);
-  border: 3px solid #8b6914;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  width: min(576px, calc(100vw - 32px));
+  aspect-ratio: 1;
   border-radius: 4px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
   user-select: none;
 }
 
 .square {
-  width: 72px;
-  height: 72px;
+  position: relative;
+  aspect-ratio: 1;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  position: relative;
-  transition: background-color 0.1s;
 }
 
 .square.light { background: #f0d9b5; }
 .square.dark { background: #b58863; }
 .square.selected { background: #7fc97f !important; }
+.square.last-move-from { background: #cdd26a !important; }
+.square.last-move-to { background: #aaa23a !important; }
+.square.check { background: radial-gradient(ellipse at center, #ff0000 0%, #e77 40%, transparent 70%) !important; }
+
 .square.legal-move::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 25%;
-  height: 25%;
+  width: 25%; height: 25%;
   background: rgba(0,0,0,0.18);
   border-radius: 50%;
   z-index: 2;
@@ -68,181 +65,77 @@ body {
 .square.legal-capture::after {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 86%;
-  height: 86%;
+  width: 86%; height: 86%;
   border: 4px solid rgba(0,0,0,0.18);
   border-radius: 50%;
   z-index: 2;
 }
-.square.last-move-from { background: #cdd26a !important; }
-.square.last-move-to { background: #aaa23a !important; }
-.square.check { background: radial-gradient(ellipse at center, #ff0000 0%, #e77 40%, transparent 70%) !important; }
 
 .piece-img {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 83%;
-  height: 83%;
+  width: 83%; height: 83%;
   pointer-events: none;
   z-index: 1;
 }
 
-.rank-label {
+.coord {
   position: absolute;
-  top: 2px;
-  left: 4px;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   pointer-events: none;
   z-index: 3;
 }
-.file-label {
-  position: absolute;
-  bottom: 1px;
-  right: 4px;
-  font-size: 11px;
-  font-weight: 700;
-  pointer-events: none;
-  z-index: 3;
-}
-.square.light .rank-label, .square.light .file-label { color: #b58863; }
-.square.dark .rank-label, .square.dark .file-label { color: #f0d9b5; }
+.rank-label { top: 2px; left: 3px; }
+.file-label { bottom: 1px; right: 3px; }
+.square.light .coord { color: #b58863; }
+.square.dark .coord { color: #f0d9b5; }
 
-/* Side panel */
-#panel {
-  width: 280px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-  border: 1px solid #e0e0e0;
-  overflow: hidden;
-}
-
-#status-bar {
-  padding: 14px 16px;
-  font-size: 15px;
+/* Controls */
+#status {
+  font-size: 14px;
   font-weight: 600;
-  text-align: center;
-  background: #4a7c59;
-  color: #fff;
-  min-height: 48px;
+  color: #555;
+  height: 20px;
+}
+
+#toolbar {
   display: flex;
+  gap: 8px;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
-#controls {
-  padding: 12px 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  border-bottom: 1px solid #e8e8e8;
-}
-
-#controls button {
-  flex: 1 1 calc(50% - 4px);
-  padding: 8px 4px;
-  background: #f0f0f0;
+#toolbar button {
+  padding: 6px 14px;
+  background: #fff;
   color: #333;
   border: 1px solid #d0d0d0;
   border-radius: 6px;
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.15s;
 }
-#controls button:hover { background: #e0e0e0; }
-#controls button:active { background: #d5d5d5; }
+#toolbar button:hover { background: #f0f0f0; }
+#toolbar button:active { background: #e5e5e5; }
 
-#difficulty-row {
-  padding: 10px 16px;
-  border-bottom: 1px solid #e8e8e8;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-}
-#difficulty-row label { white-space: nowrap; color: #555; }
-#difficulty-row select {
-  flex: 1;
-  padding: 5px 8px;
+#toolbar select {
+  padding: 6px 8px;
   background: #fff;
   color: #333;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
   font-size: 13px;
 }
 
-#color-row {
-  padding: 10px 16px;
-  border-bottom: 1px solid #e8e8e8;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+#thinking-text {
   font-size: 13px;
-}
-#color-row label { color: #555; }
-#color-row select {
-  flex: 1;
-  padding: 5px 8px;
-  background: #fff;
-  color: #333;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 13px;
-}
-
-#move-list-container {
-  padding: 12px 16px;
-  max-height: 380px;
-  overflow-y: auto;
-}
-#move-list-container h3 {
-  font-size: 12px;
   color: #999;
-  margin-bottom: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-#move-list {
-  display: grid;
-  grid-template-columns: 30px 1fr 1fr;
-  gap: 2px 8px;
-  font-size: 14px;
-  font-family: 'Courier New', monospace;
-}
-.move-number { color: #aaa; text-align: right; }
-.move-white, .move-black {
-  padding: 2px 6px;
-  border-radius: 3px;
-  cursor: default;
-  color: #333;
-}
-.move-white:hover, .move-black:hover { background: #f0f0f0; }
-
-#captured {
-  padding: 10px 16px;
-  border-top: 1px solid #e8e8e8;
-  line-height: 1.4;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-#captured-white, #captured-black {
-  min-height: 28px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.captured-img {
-  width: 24px;
-  height: 24px;
-  margin-right: -4px;
+  height: 18px;
 }
 
 /* Promotion modal */
@@ -259,14 +152,13 @@ body {
 #promotion-choices {
   background: #fff;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   display: flex;
-  gap: 12px;
+  gap: 8px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.25);
 }
 .promo-piece {
-  width: 72px;
-  height: 72px;
+  width: 64px; height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -274,93 +166,31 @@ body {
   border: 2px solid #ddd;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s, border-color 0.15s;
 }
-.promo-piece:hover { background: #e8e8e8; transform: scale(1.1); border-color: #4a7c59; }
-.promo-piece img { width: 56px; height: 56px; }
-
-/* Thinking indicator */
-#thinking {
-  display: none;
-  padding: 8px 16px;
-  text-align: center;
-  font-size: 13px;
-  color: #888;
-  border-bottom: 1px solid #e8e8e8;
-}
-#thinking.active { display: block; }
-.spinner {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #ddd;
-  border-top-color: #4a7c59;
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  vertical-align: middle;
-  margin-right: 6px;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* Scrollbar */
-#move-list-container::-webkit-scrollbar { width: 6px; }
-#move-list-container::-webkit-scrollbar-track { background: transparent; }
-#move-list-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
-
-/* Responsive */
-@media (max-width: 900px) {
-  #app { flex-direction: column; align-items: center; }
-  #panel { width: 100%; max-width: 580px; }
-  #board {
-    width: min(580px, calc(100vw - 48px));
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-  }
-  .square { width: auto; height: auto; aspect-ratio: 1; }
-}
+.promo-piece:hover { background: #e8e8e8; transform: scale(1.08); }
+.promo-piece img { width: 48px; height: 48px; }
 </style>
 </head>
 <body>
 
 <div id="app">
-  <div id="board-container">
-    <div id="board"></div>
-  </div>
-
-  <div id="panel">
-    <div id="status-bar">White to move</div>
-    <div id="thinking"><span class="spinner"></span>Engine thinking...</div>
-    <div id="controls">
-      <button onclick="newGame()">New Game</button>
-      <button onclick="undoMove()">Undo</button>
-      <button onclick="flipBoard()">Flip Board</button>
-      <button onclick="toggleAutoFlip()">Auto-Flip: Off</button>
-    </div>
-    <div id="difficulty-row">
-      <label>Difficulty:</label>
-      <select id="difficulty" onchange="onDifficultyChange()">
-        <option value="1">Beginner</option>
-        <option value="2">Easy</option>
-        <option value="3" selected>Medium</option>
-        <option value="4">Hard</option>
-        <option value="5">Expert</option>
-      </select>
-    </div>
-    <div id="color-row">
-      <label>Play as:</label>
-      <select id="player-color" onchange="onColorChange()">
-        <option value="w" selected>White</option>
-        <option value="b">Black</option>
-      </select>
-    </div>
-    <div id="captured">
-      <div id="captured-black"></div>
-      <div id="captured-white"></div>
-    </div>
-    <div id="move-list-container">
-      <h3>Moves</h3>
-      <div id="move-list"></div>
-    </div>
+  <div id="status">White to move</div>
+  <div id="board"></div>
+  <div id="thinking-text"></div>
+  <div id="toolbar">
+    <button onclick="newGame()">New</button>
+    <button onclick="undoMove()">Undo</button>
+    <select id="difficulty" onchange="engineDepth=+this.value">
+      <option value="1">Beginner</option>
+      <option value="2">Easy</option>
+      <option value="3" selected>Medium</option>
+      <option value="4">Hard</option>
+      <option value="5">Expert</option>
+    </select>
+    <select id="player-color" onchange="newGame()">
+      <option value="w" selected>White</option>
+      <option value="b">Black</option>
+    </select>
   </div>
 </div>
 
@@ -370,556 +200,189 @@ body {
 
 <script src="chess.js"></script>
 <script>
-// ============================================================
-// Piece SVG paths
-// ============================================================
-function pieceSrc(color, type) {
-  return 'pieces/' + color + type.toUpperCase() + '.svg';
-}
+function pieceSrc(c, t) { return 'pieces/' + c + t.toUpperCase() + '.svg'; }
 
-// Unicode fallback for any edge case
-const PIECE_UNICODE = {
-  wp: '\u2659', wn: '\u2658', wb: '\u2657', wr: '\u2656', wq: '\u2655', wk: '\u2654',
-  bp: '\u265F', bn: '\u265E', bb: '\u265D', br: '\u265C', bq: '\u265B', bk: '\u265A'
-};
-
-// ============================================================
-// Game state
-// ============================================================
 let game = new Chess();
-let selectedSquare = null;
-let legalMovesForSelected = [];
-let boardFlipped = false;
-let autoFlip = false;
+let selected = null;
+let legalMoves = [];
+let flipped = false;
 let playerColor = 'w';
 let lastMove = null;
-let capturedPieces = { w: [], b: [] };
 let engineDepth = 3;
-let engineThinking = false;
+let thinking = false;
 
-const PIECE_VALUES_SORT = { p: 1, n: 3, b: 3, r: 5, q: 9 };
-
-// ============================================================
-// Board rendering
-// ============================================================
 function renderBoard() {
-  const boardEl = document.getElementById('board');
-  boardEl.innerHTML = '';
-
-  for (let displayRow = 0; displayRow < 8; displayRow++) {
-    for (let displayCol = 0; displayCol < 8; displayCol++) {
-      const row = boardFlipped ? 7 - displayRow : displayRow;
-      const col = boardFlipped ? 7 - displayCol : displayCol;
-      const file = 'abcdefgh'[col];
-      const rank = 8 - row;
-      const sq = file + rank;
-      const isLight = (row + col) % 2 === 0;
-
+  const el = document.getElementById('board');
+  el.innerHTML = '';
+  for (let dr = 0; dr < 8; dr++) {
+    for (let dc = 0; dc < 8; dc++) {
+      const r = flipped ? 7 - dr : dr;
+      const c = flipped ? 7 - dc : dc;
+      const f = 'abcdefgh'[c], rk = 8 - r, sq = f + rk;
       const div = document.createElement('div');
-      div.className = 'square ' + (isLight ? 'light' : 'dark');
-      div.dataset.square = sq;
+      div.className = 'square ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
 
-      // Coordinate labels
-      if (displayCol === 0) {
-        const rl = document.createElement('span');
-        rl.className = 'rank-label';
-        rl.textContent = rank;
-        div.appendChild(rl);
-      }
-      if (displayRow === 7) {
-        const fl = document.createElement('span');
-        fl.className = 'file-label';
-        fl.textContent = file;
-        div.appendChild(fl);
-      }
+      if (dc === 0) { const s = document.createElement('span'); s.className = 'coord rank-label'; s.textContent = rk; div.appendChild(s); }
+      if (dr === 7) { const s = document.createElement('span'); s.className = 'coord file-label'; s.textContent = f; div.appendChild(s); }
 
-      // Highlights
       if (lastMove) {
         if (sq === lastMove.from) div.classList.add('last-move-from');
         if (sq === lastMove.to) div.classList.add('last-move-to');
       }
+      if (selected === sq) div.classList.add('selected');
+      if (legalMoves.some(m => m.to === sq)) div.classList.add(game.get(sq) ? 'legal-capture' : 'legal-move');
+      if (game.in_check()) { const p = game.get(sq); if (p && p.type === 'k' && p.color === game.turn()) div.classList.add('check'); }
 
-      if (selectedSquare === sq) div.classList.add('selected');
-
-      if (legalMovesForSelected.some(m => m.to === sq)) {
-        const piece = game.get(sq);
-        div.classList.add(piece ? 'legal-capture' : 'legal-move');
-      }
-
-      // Check highlight
-      if (game.in_check()) {
-        const piece = game.get(sq);
-        if (piece && piece.type === 'k' && piece.color === game.turn()) {
-          div.classList.add('check');
-        }
-      }
-
-      // Piece
       const piece = game.get(sq);
       if (piece) {
         const img = document.createElement('img');
         img.className = 'piece-img';
         img.src = pieceSrc(piece.color, piece.type);
-        img.alt = piece.color + piece.type;
         img.draggable = false;
         div.appendChild(img);
       }
 
-      div.addEventListener('click', () => onSquareClick(sq));
-      boardEl.appendChild(div);
+      div.addEventListener('click', () => onClick(sq));
+      el.appendChild(div);
     }
   }
 }
 
 function updateStatus() {
-  const statusEl = document.getElementById('status-bar');
+  const el = document.getElementById('status');
   if (game.game_over()) {
-    if (game.in_checkmate()) {
-      const winner = game.turn() === 'w' ? 'Black' : 'White';
-      statusEl.textContent = `Checkmate! ${winner} wins!`;
-      statusEl.style.background = '#c0392b';
-    } else if (game.in_stalemate()) {
-      statusEl.textContent = 'Stalemate! Draw.';
-      statusEl.style.background = '#7f8c8d';
-    } else if (game.in_threefold_repetition()) {
-      statusEl.textContent = 'Draw by repetition.';
-      statusEl.style.background = '#7f8c8d';
-    } else if (game.insufficient_material()) {
-      statusEl.textContent = 'Draw - insufficient material.';
-      statusEl.style.background = '#7f8c8d';
-    } else if (game.in_draw()) {
-      statusEl.textContent = 'Draw!';
-      statusEl.style.background = '#7f8c8d';
-    }
+    if (game.in_checkmate()) el.textContent = (game.turn() === 'w' ? 'Black' : 'White') + ' wins!';
+    else el.textContent = 'Draw';
   } else {
-    const turn = game.turn() === 'w' ? 'White' : 'Black';
-    const check = game.in_check() ? ' (Check!)' : '';
-    statusEl.textContent = `${turn} to move${check}`;
-    statusEl.style.background = '#4a7c59';
+    el.textContent = (game.turn() === 'w' ? 'White' : 'Black') + ' to move' + (game.in_check() ? ' (check)' : '');
   }
 }
 
-function updateMoveList() {
-  const moveListEl = document.getElementById('move-list');
-  const history = game.history();
-  moveListEl.innerHTML = '';
+function update() { renderBoard(); updateStatus(); }
 
-  for (let i = 0; i < history.length; i += 2) {
-    const moveNum = Math.floor(i / 2) + 1;
-    const numEl = document.createElement('span');
-    numEl.className = 'move-number';
-    numEl.textContent = moveNum + '.';
-    moveListEl.appendChild(numEl);
-
-    const whiteEl = document.createElement('span');
-    whiteEl.className = 'move-white';
-    whiteEl.textContent = history[i];
-    moveListEl.appendChild(whiteEl);
-
-    const blackEl = document.createElement('span');
-    blackEl.className = 'move-black';
-    blackEl.textContent = history[i + 1] || '';
-    moveListEl.appendChild(blackEl);
-  }
-
-  const container = document.getElementById('move-list-container');
-  container.scrollTop = container.scrollHeight;
-}
-
-function updateCaptured() {
-  capturedPieces = { w: [], b: [] };
-  const history = game.history({ verbose: true });
-  for (const move of history) {
-    if (move.captured) {
-      const capturedColor = move.color === 'w' ? 'b' : 'w';
-      capturedPieces[capturedColor].push(move.captured);
-    }
-  }
-
-  for (const color of ['w', 'b']) {
-    capturedPieces[color].sort((a, b) => (PIECE_VALUES_SORT[a] || 0) - (PIECE_VALUES_SORT[b] || 0));
-  }
-
-  for (const color of ['w', 'b']) {
-    const el = document.getElementById('captured-' + (color === 'w' ? 'white' : 'black'));
-    el.innerHTML = '';
-    for (const type of capturedPieces[color]) {
-      const img = document.createElement('img');
-      img.className = 'captured-img';
-      img.src = pieceSrc(color, type);
-      img.alt = color + type;
-      el.appendChild(img);
-    }
-  }
-}
-
-function updateAll() {
-  renderBoard();
-  updateStatus();
-  updateMoveList();
-  updateCaptured();
-}
-
-// ============================================================
-// Interaction
-// ============================================================
-function onSquareClick(sq) {
-  if (engineThinking || game.game_over()) return;
-  if (game.turn() !== playerColor) return;
-
+function onClick(sq) {
+  if (thinking || game.game_over() || game.turn() !== playerColor) return;
   const piece = game.get(sq);
 
-  if (selectedSquare) {
-    const move = legalMovesForSelected.find(m => m.to === sq);
+  if (selected) {
+    const move = legalMoves.find(m => m.to === sq);
     if (move) {
-      if (move.flags.includes('p') || (move.piece === 'p' && (sq[1] === '8' || sq[1] === '1'))) {
-        showPromotionModal(selectedSquare, sq);
-        return;
-      }
-      makePlayerMove(selectedSquare, sq);
+      if (move.piece === 'p' && (sq[1] === '8' || sq[1] === '1')) { showPromo(selected, sq); return; }
+      doMove(selected, sq);
       return;
     }
-
-    if (piece && piece.color === game.turn()) {
-      selectSquare(sq);
-      return;
-    }
-
-    clearSelection();
-    renderBoard();
-    return;
+    if (piece && piece.color === game.turn()) { select(sq); return; }
+    selected = null; legalMoves = []; renderBoard(); return;
   }
-
-  if (piece && piece.color === game.turn()) {
-    selectSquare(sq);
-  }
+  if (piece && piece.color === game.turn()) select(sq);
 }
 
-function selectSquare(sq) {
-  selectedSquare = sq;
-  legalMovesForSelected = game.moves({ square: sq, verbose: true });
-  renderBoard();
+function select(sq) { selected = sq; legalMoves = game.moves({ square: sq, verbose: true }); renderBoard(); }
+
+function doMove(from, to, promo) {
+  const m = game.move({ from, to, promotion: promo || undefined });
+  if (m) { lastMove = { from, to }; selected = null; legalMoves = []; update(); if (!game.game_over()) engineMove(); }
 }
 
-function clearSelection() {
-  selectedSquare = null;
-  legalMovesForSelected = [];
-}
-
-function makePlayerMove(from, to, promotion) {
-  const move = game.move({ from, to, promotion: promotion || undefined });
-  if (move) {
-    lastMove = { from, to };
-    clearSelection();
-    updateAll();
-
-    if (!game.game_over()) {
-      scheduleEngineMove();
-    }
-  }
-}
-
-function showPromotionModal(from, to) {
-  const color = game.turn();
+function showPromo(from, to) {
   const modal = document.getElementById('promotion-modal');
   const choices = document.getElementById('promotion-choices');
   choices.innerHTML = '';
-
-  for (const p of ['q', 'r', 'b', 'n']) {
+  for (const p of ['q','r','b','n']) {
     const btn = document.createElement('button');
     btn.className = 'promo-piece';
     const img = document.createElement('img');
-    img.src = pieceSrc(color, p);
-    img.alt = p;
+    img.src = pieceSrc(game.turn(), p);
     btn.appendChild(img);
-    btn.onclick = () => {
-      modal.classList.remove('active');
-      makePlayerMove(from, to, p);
-    };
+    btn.onclick = () => { modal.classList.remove('active'); doMove(from, to, p); };
     choices.appendChild(btn);
   }
-
   modal.classList.add('active');
 }
 
-// ============================================================
-// Engine (Minimax with Alpha-Beta Pruning)
-// ============================================================
-const PIECE_VALUES = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
-
+// Engine
+const PV = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
 const PST = {
-  p: [
-     0,  0,  0,  0,  0,  0,  0,  0,
-    50, 50, 50, 50, 50, 50, 50, 50,
-    10, 10, 20, 30, 30, 20, 10, 10,
-     5,  5, 10, 25, 25, 10,  5,  5,
-     0,  0,  0, 20, 20,  0,  0,  0,
-     5, -5,-10,  0,  0,-10, -5,  5,
-     5, 10, 10,-20,-20, 10, 10,  5,
-     0,  0,  0,  0,  0,  0,  0,  0
-  ],
-  n: [
-    -50,-40,-30,-30,-30,-30,-40,-50,
-    -40,-20,  0,  0,  0,  0,-20,-40,
-    -30,  0, 10, 15, 15, 10,  0,-30,
-    -30,  5, 15, 20, 20, 15,  5,-30,
-    -30,  0, 15, 20, 20, 15,  0,-30,
-    -30,  5, 10, 15, 15, 10,  5,-30,
-    -40,-20,  0,  5,  5,  0,-20,-40,
-    -50,-40,-30,-30,-30,-30,-40,-50
-  ],
-  b: [
-    -20,-10,-10,-10,-10,-10,-10,-20,
-    -10,  0,  0,  0,  0,  0,  0,-10,
-    -10,  0, 10, 10, 10, 10,  0,-10,
-    -10,  5,  5, 10, 10,  5,  5,-10,
-    -10,  0, 10, 10, 10, 10,  0,-10,
-    -10, 10, 10, 10, 10, 10, 10,-10,
-    -10,  5,  0,  0,  0,  0,  5,-10,
-    -20,-10,-10,-10,-10,-10,-10,-20
-  ],
-  r: [
-     0,  0,  0,  0,  0,  0,  0,  0,
-     5, 10, 10, 10, 10, 10, 10,  5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-    -5,  0,  0,  0,  0,  0,  0, -5,
-     0,  0,  0,  5,  5,  0,  0,  0
-  ],
-  q: [
-    -20,-10,-10, -5, -5,-10,-10,-20,
-    -10,  0,  0,  0,  0,  0,  0,-10,
-    -10,  0,  5,  5,  5,  5,  0,-10,
-     -5,  0,  5,  5,  5,  5,  0, -5,
-      0,  0,  5,  5,  5,  5,  0, -5,
-    -10,  5,  5,  5,  5,  5,  0,-10,
-    -10,  0,  5,  0,  0,  0,  0,-10,
-    -20,-10,-10, -5, -5,-10,-10,-20
-  ],
-  k: [
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -30,-40,-40,-50,-50,-40,-40,-30,
-    -20,-30,-30,-40,-40,-30,-30,-20,
-    -10,-20,-20,-20,-20,-20,-20,-10,
-     20, 20,  0,  0,  0,  0, 20, 20,
-     20, 30, 10,  0,  0, 10, 30, 20
-  ]
+  p:[0,0,0,0,0,0,0,0,50,50,50,50,50,50,50,50,10,10,20,30,30,20,10,10,5,5,10,25,25,10,5,5,0,0,0,20,20,0,0,0,5,-5,-10,0,0,-10,-5,5,5,10,10,-20,-20,10,10,5,0,0,0,0,0,0,0,0],
+  n:[-50,-40,-30,-30,-30,-30,-40,-50,-40,-20,0,0,0,0,-20,-40,-30,0,10,15,15,10,0,-30,-30,5,15,20,20,15,5,-30,-30,0,15,20,20,15,0,-30,-30,5,10,15,15,10,5,-30,-40,-20,0,5,5,0,-20,-40,-50,-40,-30,-30,-30,-30,-40,-50],
+  b:[-20,-10,-10,-10,-10,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,10,10,10,10,0,-10,-10,5,5,10,10,5,5,-10,-10,0,10,10,10,10,0,-10,-10,10,10,10,10,10,10,-10,-10,5,0,0,0,0,5,-10,-20,-10,-10,-10,-10,-10,-10,-20],
+  r:[0,0,0,0,0,0,0,0,5,10,10,10,10,10,10,5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,-5,0,0,0,0,0,0,-5,0,0,0,5,5,0,0,0],
+  q:[-20,-10,-10,-5,-5,-10,-10,-20,-10,0,0,0,0,0,0,-10,-10,0,5,5,5,5,0,-10,-5,0,5,5,5,5,0,-5,0,0,5,5,5,5,0,-5,-10,5,5,5,5,5,0,-10,-10,0,5,0,0,0,0,-10,-20,-10,-10,-5,-5,-10,-10,-20],
+  k:[-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-30,-40,-40,-50,-50,-40,-40,-30,-20,-30,-30,-40,-40,-30,-30,-20,-10,-20,-20,-20,-20,-20,-20,-10,20,20,0,0,0,0,20,20,20,30,10,0,0,10,30,20]
 };
+const KE=[-50,-40,-30,-20,-20,-30,-40,-50,-30,-20,-10,0,0,-10,-20,-30,-30,-10,20,30,30,20,-10,-30,-30,-10,30,40,40,30,-10,-30,-30,-10,30,40,40,30,-10,-30,-30,-10,20,30,30,20,-10,-30,-30,-30,0,0,0,0,-30,-30,-50,-30,-30,-30,-30,-30,-30,-50];
 
-const PST_KING_END = [
-  -50,-40,-30,-20,-20,-30,-40,-50,
-  -30,-20,-10,  0,  0,-10,-20,-30,
-  -30,-10, 20, 30, 30, 20,-10,-30,
-  -30,-10, 30, 40, 40, 30,-10,-30,
-  -30,-10, 30, 40, 40, 30,-10,-30,
-  -30,-10, 20, 30, 30, 20,-10,-30,
-  -30,-30,  0,  0,  0,  0,-30,-30,
-  -50,-30,-30,-30,-30,-30,-30,-50
-];
-
-function getPstValue(piece, sq, isEndgame) {
-  const col = sq.charCodeAt(0) - 97;
-  const row = 8 - parseInt(sq[1]);
-  let table = PST[piece.type];
-  if (piece.type === 'k' && isEndgame) table = PST_KING_END;
-  const idx = piece.color === 'w' ? (row * 8 + col) : ((7 - row) * 8 + col);
-  return table[idx];
+function pst(p, sq, endg) {
+  const c = sq.charCodeAt(0) - 97, r = 8 - +sq[1];
+  const t = (p.type === 'k' && endg) ? KE : PST[p.type];
+  return t[p.color === 'w' ? r * 8 + c : (7 - r) * 8 + c];
 }
 
-function evaluateBoard(g) {
-  const board = g.board();
-  let score = 0;
-  let whiteMaterial = 0;
-  let blackMaterial = 0;
-
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const piece = board[r][c];
-      if (!piece || piece.type === 'k') continue;
-      if (piece.color === 'w') whiteMaterial += PIECE_VALUES[piece.type];
-      else blackMaterial += PIECE_VALUES[piece.type];
-    }
-  }
-
-  const isEndgame = (whiteMaterial + blackMaterial) < 2600;
-
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const piece = board[r][c];
-      if (!piece) continue;
-      const sq = 'abcdefgh'[c] + (8 - r);
-      const val = PIECE_VALUES[piece.type] + getPstValue(piece, sq, isEndgame);
-      score += piece.color === 'w' ? val : -val;
-    }
-  }
-
-  const currentMoves = g.moves().length;
-  score += (g.turn() === 'w' ? 1 : -1) * currentMoves * 2;
-
-  return score;
+function evaluate(g) {
+  const b = g.board(); let s = 0, wm = 0, bm = 0;
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const p = b[r][c]; if (!p || p.type === 'k') continue; if (p.color === 'w') wm += PV[p.type]; else bm += PV[p.type]; }
+  const endg = (wm + bm) < 2600;
+  for (let r = 0; r < 8; r++) for (let c = 0; c < 8; c++) { const p = b[r][c]; if (!p) continue; const sq = 'abcdefgh'[c] + (8 - r); s += (p.color === 'w' ? 1 : -1) * (PV[p.type] + pst(p, sq, endg)); }
+  s += (g.turn() === 'w' ? 1 : -1) * g.moves().length * 2;
+  return s;
 }
 
-function orderMoves(g, moves) {
-  return moves.map(move => {
-    let score = 0;
-    const m = g.move(move);
-    if (m.captured) {
-      score += PIECE_VALUES[m.captured] * 10 - PIECE_VALUES[m.piece];
-    }
-    if (m.flags.includes('p')) score += PIECE_VALUES[m.promotion || 'q'];
-    if (g.in_check()) score += 50;
-    g.undo();
-    return { move, score };
-  }).sort((a, b) => b.score - a.score).map(x => x.move);
+function order(g, moves) {
+  return moves.map(m => { let s = 0; const mv = g.move(m); if (mv.captured) s += PV[mv.captured] * 10 - PV[mv.piece]; if (mv.flags.includes('p')) s += PV[mv.promotion || 'q']; if (g.in_check()) s += 50; g.undo(); return { m, s }; }).sort((a, b) => b.s - a.s).map(x => x.m);
 }
 
-function minimax(g, depth, alpha, beta, isMaximizing) {
-  if (depth === 0) return evaluateBoard(g);
-
-  if (g.game_over()) {
-    if (g.in_checkmate()) return isMaximizing ? -99999 + (engineDepth - depth) : 99999 - (engineDepth - depth);
-    return 0;
-  }
-
-  const moves = orderMoves(g, g.moves());
-
-  if (isMaximizing) {
-    let maxEval = -Infinity;
-    for (const move of moves) {
-      g.move(move);
-      const eval_ = minimax(g, depth - 1, alpha, beta, false);
-      g.undo();
-      maxEval = Math.max(maxEval, eval_);
-      alpha = Math.max(alpha, eval_);
-      if (beta <= alpha) break;
-    }
-    return maxEval;
-  } else {
-    let minEval = Infinity;
-    for (const move of moves) {
-      g.move(move);
-      const eval_ = minimax(g, depth - 1, alpha, beta, true);
-      g.undo();
-      minEval = Math.min(minEval, eval_);
-      beta = Math.min(beta, eval_);
-      if (beta <= alpha) break;
-    }
-    return minEval;
-  }
+function minimax(g, d, a, b, max) {
+  if (d === 0) return evaluate(g);
+  if (g.game_over()) return g.in_checkmate() ? (max ? -99999 + (engineDepth - d) : 99999 - (engineDepth - d)) : 0;
+  const moves = order(g, g.moves());
+  if (max) { let v = -Infinity; for (const m of moves) { g.move(m); v = Math.max(v, minimax(g, d-1, a, b, false)); g.undo(); a = Math.max(a, v); if (b <= a) break; } return v; }
+  else { let v = Infinity; for (const m of moves) { g.move(m); v = Math.min(v, minimax(g, d-1, a, b, true)); g.undo(); b = Math.min(b, v); if (b <= a) break; } return v; }
 }
 
-function findBestMove(g) {
-  const isMaximizing = g.turn() === 'w';
-  const moves = orderMoves(g, g.moves());
-  let bestMove = moves[0];
-  let bestEval = isMaximizing ? -Infinity : Infinity;
-  const evals = [];
-
-  for (const move of moves) {
-    g.move(move);
-    const eval_ = minimax(g, engineDepth - 1, -Infinity, Infinity, !isMaximizing);
-    g.undo();
-    evals.push({ move, eval: eval_ });
-
-    if (isMaximizing) {
-      if (eval_ > bestEval) { bestEval = eval_; bestMove = move; }
-    } else {
-      if (eval_ < bestEval) { bestEval = eval_; bestMove = move; }
-    }
+function bestMove(g) {
+  const max = g.turn() === 'w', moves = order(g, g.moves());
+  let best = moves[0], bestE = max ? -Infinity : Infinity, evals = [];
+  for (const m of moves) {
+    g.move(m); const e = minimax(g, engineDepth - 1, -Infinity, Infinity, !max); g.undo();
+    evals.push({ m, e });
+    if (max ? e > bestE : e < bestE) { bestE = e; best = m; }
   }
-
-  const threshold = engineDepth <= 2 ? 30 : 10;
-  const candidates = evals.filter(e => Math.abs(e.eval - bestEval) <= threshold);
-
-  if (candidates.length > 1) {
-    return candidates[Math.floor(Math.random() * candidates.length)].move;
-  }
-
-  return bestMove;
+  const cands = evals.filter(x => Math.abs(x.e - bestE) <= (engineDepth <= 2 ? 30 : 10));
+  return cands.length > 1 ? cands[Math.floor(Math.random() * cands.length)].m : best;
 }
 
-function scheduleEngineMove() {
-  engineThinking = true;
-  document.getElementById('thinking').classList.add('active');
-
+function engineMove() {
+  thinking = true;
+  document.getElementById('thinking-text').textContent = 'Thinking...';
   setTimeout(() => {
-    const moveSan = findBestMove(game);
-    const moveObj = game.move(moveSan);
-    if (moveObj) {
-      lastMove = { from: moveObj.from, to: moveObj.to };
-    }
-
-    engineThinking = false;
-    document.getElementById('thinking').classList.remove('active');
-
-    if (autoFlip) {
-      boardFlipped = game.turn() !== playerColor;
-    }
-
-    updateAll();
-  }, 100);
+    const m = game.move(bestMove(game));
+    if (m) lastMove = { from: m.from, to: m.to };
+    thinking = false;
+    document.getElementById('thinking-text').textContent = '';
+    update();
+  }, 50);
 }
 
-// ============================================================
-// Controls
-// ============================================================
 function newGame() {
   game = new Chess();
-  selectedSquare = null;
-  legalMovesForSelected = [];
-  lastMove = null;
-  capturedPieces = { w: [], b: [] };
-  engineThinking = false;
-  document.getElementById('thinking').classList.remove('active');
-
+  selected = null; legalMoves = []; lastMove = null; thinking = false;
+  document.getElementById('thinking-text').textContent = '';
   playerColor = document.getElementById('player-color').value;
-  boardFlipped = playerColor === 'b';
-
-  updateAll();
-
-  if (playerColor === 'b') {
-    scheduleEngineMove();
-  }
+  flipped = playerColor === 'b';
+  update();
+  if (playerColor === 'b') engineMove();
 }
 
 function undoMove() {
-  if (engineThinking) return;
-  game.undo();
-  game.undo();
-  const history = game.history({ verbose: true });
-  lastMove = history.length > 0 ? { from: history[history.length-1].from, to: history[history.length-1].to } : null;
-  clearSelection();
-  updateAll();
+  if (thinking) return;
+  game.undo(); game.undo();
+  const h = game.history({ verbose: true });
+  lastMove = h.length ? { from: h[h.length-1].from, to: h[h.length-1].to } : null;
+  selected = null; legalMoves = [];
+  update();
 }
 
-function flipBoard() {
-  boardFlipped = !boardFlipped;
-  renderBoard();
-}
-
-function toggleAutoFlip() {
-  autoFlip = !autoFlip;
-  const btn = document.querySelector('#controls button:last-child');
-  btn.textContent = 'Auto-Flip: ' + (autoFlip ? 'On' : 'Off');
-}
-
-function onDifficultyChange() {
-  const val = parseInt(document.getElementById('difficulty').value);
-  engineDepth = val || 3;
-}
-
-function onColorChange() {
-  newGame();
-}
-
-// ============================================================
-// Init
-// ============================================================
-updateAll();
+update();
 </script>
 </body>
 </html>
