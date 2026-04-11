@@ -171,6 +171,45 @@ body {
 }
 .promo-piece:hover { background: #e8e8e8; transform: scale(1.08); }
 .promo-piece img { width: 48px; height: 48px; }
+
+/* Settings popup */
+#settings-popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 90;
+  justify-content: center;
+  align-items: center;
+}
+#settings-popup.active { display: flex; }
+#settings-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  min-width: 220px;
+}
+#settings-content h3 { font-size: 13px; color: #999; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.set-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  margin: 4px 0;
+  background: #f5f5f5;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+.set-option:hover { background: #eee; }
+.set-option.selected { border-color: #7fc97f; background: #eafaea; }
+.set-preview { display: flex; gap: 2px; margin-left: 12px; }
+.set-preview img { width: 26px; height: 26px; }
 </style>
 </head>
 <body>
@@ -193,6 +232,14 @@ body {
       <option value="w" selected>White</option>
       <option value="b">Black</option>
     </select>
+    <button onclick="toggleSettings()" title="Settings" style="padding:6px 10px;font-size:16px;line-height:1">&#9881;</button>
+  </div>
+</div>
+
+<div id="settings-popup">
+  <div id="settings-content">
+    <h3>Pieces</h3>
+    <div id="set-options"></div>
   </div>
 </div>
 
@@ -202,7 +249,10 @@ body {
 
 <script src="chess.js"></script>
 <script>
-function pieceSrc(c, t) { return 'pieces/' + c + t.toUpperCase() + '.svg'; }
+const PIECE_SETS = ['cburnett', 'chessnut', 'fantasy', 'merida', 'staunty'];
+let pieceSet = 'cburnett';
+
+function pieceSrc(c, t) { return 'pieces/' + pieceSet + '/' + c + t.toUpperCase() + '.svg'; }
 
 let game = new Chess();
 let selected = null;
@@ -261,7 +311,7 @@ function updateStatus() {
 }
 
 function save() {
-  localStorage.setItem('chess', JSON.stringify({ pgn: game.pgn(), playerColor, engineDepth }));
+  localStorage.setItem('chess', JSON.stringify({ pgn: game.pgn(), playerColor, engineDepth, pieceSet }));
 }
 
 function load() {
@@ -271,6 +321,7 @@ function load() {
       game.load_pgn(d.pgn);
       playerColor = d.playerColor || 'w';
       engineDepth = d.engineDepth || 3;
+      pieceSet = d.pieceSet || 'cburnett';
       flipped = playerColor === 'b';
       document.getElementById('player-color').value = playerColor;
       document.getElementById('difficulty').value = engineDepth;
@@ -406,7 +457,42 @@ function undoMove() {
   update();
 }
 
+function toggleSettings() {
+  document.getElementById('settings-popup').classList.toggle('active');
+}
+
+function setPieceSet(name) {
+  pieceSet = name;
+  document.querySelectorAll('.set-option').forEach(el => el.classList.toggle('selected', el.dataset.set === name));
+  renderBoard();
+  save();
+}
+
+function initSettings() {
+  const container = document.getElementById('set-options');
+  for (const name of PIECE_SETS) {
+    const opt = document.createElement('button');
+    opt.className = 'set-option' + (name === pieceSet ? ' selected' : '');
+    opt.dataset.set = name;
+    opt.onclick = () => { setPieceSet(name); toggleSettings(); };
+    const label = document.createElement('span');
+    label.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+    opt.appendChild(label);
+    const preview = document.createElement('span');
+    preview.className = 'set-preview';
+    for (const [c, t] of [['w','N'],['b','Q'],['w','P'],['b','R']]) {
+      const img = document.createElement('img');
+      img.src = 'pieces/' + name + '/' + c + t + '.svg';
+      preview.appendChild(img);
+    }
+    opt.appendChild(preview);
+    container.appendChild(opt);
+  }
+  document.getElementById('settings-popup').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+}
+
 load();
+initSettings();
 update();
 </script>
 </body>
