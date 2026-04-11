@@ -37,7 +37,7 @@ body {
   display: grid;
   grid-template-columns: repeat(8, 1fr);
   grid-template-rows: repeat(8, 1fr);
-  width: min(576px, calc(100vw - 32px));
+  width: min(576px, 100vw);
   aspect-ratio: 1;
   border-radius: 4px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.12);
@@ -302,7 +302,7 @@ body {
 
 <script src="chess.js"></script>
 <script>
-const PIECE_SETS = ['alpha','california','cardinal','cburnett','chessnut','companion','cooke','dubrovny','fantasy','firi','fresca','gioco','governor','icpieces','kiwen-suwi','kosal','leipzig','letter','maestro','merida','monarchy','mono','mpchess','pixel','reillycraig','rhosgfx','riohacha','shapes','spatial','staunty','tatiana'];
+const PIECE_SETS = ['alpha','california','cardinal','cburnett','chessnut','companion','cooke','dubrovny','fantasy','firi','fresca','gioco','governor','icpieces','kaneo','kiwen-suwi','kosal','leipzig','letter','maestro','merida','monarchy','mono','mpchess','pixel','reillycraig','rhosgfx','riohacha','shapes','spatial','staunty','tatiana'];
 let pieceSet = 'cburnett';
 
 function pieceSrc(c, t) { return 'pieces/' + pieceSet + '/' + c + t.toUpperCase() + '.svg'; }

@@ -1,4 +1,4 @@
-const CACHE = 'chess-v4';
+const CACHE = 'chess-v5';
 const ASSETS = [
   './',
   'index.html',
@@ -23,6 +23,7 @@ const ASSETS = [
   'pieces/gioco/wK.svg','pieces/gioco/wQ.svg','pieces/gioco/wR.svg','pieces/gioco/wB.svg','pieces/gioco/wN.svg','pieces/gioco/wP.svg','pieces/gioco/bK.svg','pieces/gioco/bQ.svg','pieces/gioco/bR.svg','pieces/gioco/bB.svg','pieces/gioco/bN.svg','pieces/gioco/bP.svg',
   'pieces/governor/wK.svg','pieces/governor/wQ.svg','pieces/governor/wR.svg','pieces/governor/wB.svg','pieces/governor/wN.svg','pieces/governor/wP.svg','pieces/governor/bK.svg','pieces/governor/bQ.svg','pieces/governor/bR.svg','pieces/governor/bB.svg','pieces/governor/bN.svg','pieces/governor/bP.svg',
   'pieces/icpieces/wK.svg','pieces/icpieces/wQ.svg','pieces/icpieces/wR.svg','pieces/icpieces/wB.svg','pieces/icpieces/wN.svg','pieces/icpieces/wP.svg','pieces/icpieces/bK.svg','pieces/icpieces/bQ.svg','pieces/icpieces/bR.svg','pieces/icpieces/bB.svg','pieces/icpieces/bN.svg','pieces/icpieces/bP.svg',
+  'pieces/kaneo/wK.svg','pieces/kaneo/wQ.svg','pieces/kaneo/wR.svg','pieces/kaneo/wB.svg','pieces/kaneo/wN.svg','pieces/kaneo/wP.svg','pieces/kaneo/bK.svg','pieces/kaneo/bQ.svg','pieces/kaneo/bR.svg','pieces/kaneo/bB.svg','pieces/kaneo/bN.svg','pieces/kaneo/bP.svg',
   'pieces/kiwen-suwi/wK.svg','pieces/kiwen-suwi/wQ.svg','pieces/kiwen-suwi/wR.svg','pieces/kiwen-suwi/wB.svg','pieces/kiwen-suwi/wN.svg','pieces/kiwen-suwi/wP.svg','pieces/kiwen-suwi/bK.svg','pieces/kiwen-suwi/bQ.svg','pieces/kiwen-suwi/bR.svg','pieces/kiwen-suwi/bB.svg','pieces/kiwen-suwi/bN.svg','pieces/kiwen-suwi/bP.svg',
   'pieces/kosal/wK.svg','pieces/kosal/wQ.svg','pieces/kosal/wR.svg','pieces/kosal/wB.svg','pieces/kosal/wN.svg','pieces/kosal/wP.svg','pieces/kosal/bK.svg','pieces/kosal/bQ.svg','pieces/kosal/bR.svg','pieces/kosal/bB.svg','pieces/kosal/bN.svg','pieces/kosal/bP.svg',
   'pieces/leipzig/wK.svg','pieces/leipzig/wQ.svg','pieces/leipzig/wR.svg','pieces/leipzig/wB.svg','pieces/leipzig/wN.svg','pieces/leipzig/wP.svg','pieces/leipzig/bK.svg','pieces/leipzig/bQ.svg','pieces/leipzig/bR.svg','pieces/leipzig/bB.svg','pieces/leipzig/bN.svg','pieces/leipzig/bP.svg',
