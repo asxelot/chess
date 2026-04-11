@@ -131,11 +131,6 @@ body {
 #toolbar button:hover { background: #f0f0f0; }
 #toolbar button:active { background: #e5e5e5; }
 
-#thinking-text {
-  font-size: 13px;
-  color: #999;
-  height: 18px;
-}
 
 /* Promotion modal */
 #promotion-modal {
@@ -259,7 +254,6 @@ body {
 
 <div id="app">
   <div id="status">White to move</div>
-  <div id="thinking-text"></div>
   <div id="board"></div>
   <div id="toolbar">
     <button onclick="showNewGame()">New</button>
@@ -319,39 +313,77 @@ let lastMove = null;
 let engineDepth = 3;
 let thinking = false;
 
-function renderBoard() {
+let boardBuilt = false;
+const squares = [];
+
+function buildBoard() {
   const el = document.getElementById('board');
-  el.innerHTML = '';
+  for (let i = 0; i < 64; i++) {
+    const div = document.createElement('div');
+    div.className = 'square';
+    const img = document.createElement('img');
+    img.className = 'piece-img';
+    img.draggable = false;
+    img.style.display = 'none';
+    div.appendChild(img);
+    div.addEventListener('click', () => {
+      const sq = div.dataset.sq;
+      if (sq) onClick(sq);
+    });
+    squares.push({ div, img, rankLabel: null, fileLabel: null });
+    el.appendChild(div);
+  }
+  boardBuilt = true;
+}
+
+function renderBoard() {
+  if (!boardBuilt) buildBoard();
+  const inCheck = game.in_check();
+  const turnColor = game.turn();
+
   for (let dr = 0; dr < 8; dr++) {
     for (let dc = 0; dc < 8; dc++) {
+      const idx = dr * 8 + dc;
+      const { div, img } = squares[idx];
       const r = flipped ? 7 - dr : dr;
       const c = flipped ? 7 - dc : dc;
       const f = 'abcdefgh'[c], rk = 8 - r, sq = f + rk;
-      const div = document.createElement('div');
-      div.className = 'square ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
+      const isLight = (r + c) % 2 === 0;
 
-      if (dc === 0) { const s = document.createElement('span'); s.className = 'coord rank-label'; s.textContent = rk; div.appendChild(s); }
-      if (dr === 7) { const s = document.createElement('span'); s.className = 'coord file-label'; s.textContent = f; div.appendChild(s); }
+      div.dataset.sq = sq;
 
+      // Classes
+      let cls = 'square ' + (isLight ? 'light' : 'dark');
       if (lastMove) {
-        if (sq === lastMove.from) div.classList.add('last-move-from');
-        if (sq === lastMove.to) div.classList.add('last-move-to');
+        if (sq === lastMove.from) cls += ' last-move-from';
+        if (sq === lastMove.to) cls += ' last-move-to';
       }
-      if (selected === sq) div.classList.add('selected');
-      if (legalMoves.some(m => m.to === sq)) div.classList.add(game.get(sq) ? 'legal-capture' : 'legal-move');
-      if (game.in_check()) { const p = game.get(sq); if (p && p.type === 'k' && p.color === game.turn()) div.classList.add('check'); }
+      if (selected === sq) cls += ' selected';
+      if (legalMoves.some(m => m.to === sq)) cls += game.get(sq) ? ' legal-capture' : ' legal-move';
+      if (inCheck) { const p = game.get(sq); if (p && p.type === 'k' && p.color === turnColor) cls += ' check'; }
+      div.className = cls;
 
+      // Piece image
       const piece = game.get(sq);
       if (piece) {
-        const img = document.createElement('img');
-        img.className = 'piece-img';
-        img.src = pieceSrc(piece.color, piece.type);
-        img.draggable = false;
-        div.appendChild(img);
+        const src = pieceSrc(piece.color, piece.type);
+        if (img.getAttribute('src') !== src) img.src = src;
+        img.style.display = '';
+      } else {
+        img.style.display = 'none';
       }
 
-      div.addEventListener('click', () => onClick(sq));
-      el.appendChild(div);
+      // Coord labels
+      let s = squares[idx];
+      if (dc === 0) {
+        if (!s.rankLabel) { s.rankLabel = document.createElement('span'); s.rankLabel.className = 'coord rank-label'; div.appendChild(s.rankLabel); }
+        s.rankLabel.textContent = rk;
+      } else if (s.rankLabel) { s.rankLabel.remove(); s.rankLabel = null; }
+
+      if (dr === 7) {
+        if (!s.fileLabel) { s.fileLabel = document.createElement('span'); s.fileLabel.className = 'coord file-label'; div.appendChild(s.fileLabel); }
+        s.fileLabel.textContent = f;
+      } else if (s.fileLabel) { s.fileLabel.remove(); s.fileLabel = null; }
     }
   }
 }
@@ -481,13 +513,11 @@ function bestMove(g) {
 
 function engineMove() {
   thinking = true;
-  document.getElementById('thinking-text').textContent = 'Thinking...';
   setTimeout(() => {
     const m = game.move(bestMove(game));
     if (m) lastMove = { from: m.from, to: m.to };
     thinking = false;
-    document.getElementById('thinking-text').textContent = '';
-    update();
+      update();
   }, 50);
 }
 
@@ -501,7 +531,6 @@ function startNewGame() {
   document.getElementById('newgame-popup').classList.remove('active');
   game = new Chess();
   selected = null; legalMoves = []; lastMove = null; thinking = false;
-  document.getElementById('thinking-text').textContent = '';
   playerColor = document.getElementById('player-color').value;
   engineDepth = +document.getElementById('difficulty').value;
   flipped = playerColor === 'b';
