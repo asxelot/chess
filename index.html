@@ -136,6 +136,16 @@ body {
   color: #999;
   height: 18px;
 }
+#thinking-text::after {
+  content: '';
+  animation: dots 1.2s steps(4, end) infinite;
+}
+@keyframes dots {
+  0%  { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}
 
 /* Promotion modal */
 #promotion-modal {
@@ -481,7 +491,7 @@ function bestMove(g) {
 
 function engineMove() {
   thinking = true;
-  document.getElementById('thinking-text').textContent = 'Thinking...';
+  document.getElementById('thinking-text').textContent = 'Thinking';
   setTimeout(() => {
     const m = game.move(bestMove(game));
     if (m) lastMove = { from: m.from, to: m.to };
