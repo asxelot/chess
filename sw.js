@@ -1,4 +1,4 @@
-const CACHE = 'chess-v2';
+const CACHE = 'chess-v3';
 const ASSETS = [
   './',
   'index.html',
@@ -9,16 +9,24 @@ const ASSETS = [
   'icon-192.png',
   'icon-512.png',
   'apple-touch-icon.png',
-  'pieces/cburnett/wK.svg','pieces/cburnett/wQ.svg','pieces/cburnett/wR.svg','pieces/cburnett/wB.svg','pieces/cburnett/wN.svg','pieces/cburnett/wP.svg',
-  'pieces/cburnett/bK.svg','pieces/cburnett/bQ.svg','pieces/cburnett/bR.svg','pieces/cburnett/bB.svg','pieces/cburnett/bN.svg','pieces/cburnett/bP.svg',
-  'pieces/chessnut/wK.svg','pieces/chessnut/wQ.svg','pieces/chessnut/wR.svg','pieces/chessnut/wB.svg','pieces/chessnut/wN.svg','pieces/chessnut/wP.svg',
-  'pieces/chessnut/bK.svg','pieces/chessnut/bQ.svg','pieces/chessnut/bR.svg','pieces/chessnut/bB.svg','pieces/chessnut/bN.svg','pieces/chessnut/bP.svg',
-  'pieces/fantasy/wK.svg','pieces/fantasy/wQ.svg','pieces/fantasy/wR.svg','pieces/fantasy/wB.svg','pieces/fantasy/wN.svg','pieces/fantasy/wP.svg',
-  'pieces/fantasy/bK.svg','pieces/fantasy/bQ.svg','pieces/fantasy/bR.svg','pieces/fantasy/bB.svg','pieces/fantasy/bN.svg','pieces/fantasy/bP.svg',
-  'pieces/merida/wK.svg','pieces/merida/wQ.svg','pieces/merida/wR.svg','pieces/merida/wB.svg','pieces/merida/wN.svg','pieces/merida/wP.svg',
-  'pieces/merida/bK.svg','pieces/merida/bQ.svg','pieces/merida/bR.svg','pieces/merida/bB.svg','pieces/merida/bN.svg','pieces/merida/bP.svg',
-  'pieces/staunty/wK.svg','pieces/staunty/wQ.svg','pieces/staunty/wR.svg','pieces/staunty/wB.svg','pieces/staunty/wN.svg','pieces/staunty/wP.svg',
-  'pieces/staunty/bK.svg','pieces/staunty/bQ.svg','pieces/staunty/bR.svg','pieces/staunty/bB.svg','pieces/staunty/bN.svg','pieces/staunty/bP.svg'
+  'pieces/alpha/wK.svg','pieces/alpha/wQ.svg','pieces/alpha/wR.svg','pieces/alpha/wB.svg','pieces/alpha/wN.svg','pieces/alpha/wP.svg','pieces/alpha/bK.svg','pieces/alpha/bQ.svg','pieces/alpha/bR.svg','pieces/alpha/bB.svg','pieces/alpha/bN.svg','pieces/alpha/bP.svg',
+  'pieces/california/wK.svg','pieces/california/wQ.svg','pieces/california/wR.svg','pieces/california/wB.svg','pieces/california/wN.svg','pieces/california/wP.svg','pieces/california/bK.svg','pieces/california/bQ.svg','pieces/california/bR.svg','pieces/california/bB.svg','pieces/california/bN.svg','pieces/california/bP.svg',
+  'pieces/cardinal/wK.svg','pieces/cardinal/wQ.svg','pieces/cardinal/wR.svg','pieces/cardinal/wB.svg','pieces/cardinal/wN.svg','pieces/cardinal/wP.svg','pieces/cardinal/bK.svg','pieces/cardinal/bQ.svg','pieces/cardinal/bR.svg','pieces/cardinal/bB.svg','pieces/cardinal/bN.svg','pieces/cardinal/bP.svg',
+  'pieces/cburnett/wK.svg','pieces/cburnett/wQ.svg','pieces/cburnett/wR.svg','pieces/cburnett/wB.svg','pieces/cburnett/wN.svg','pieces/cburnett/wP.svg','pieces/cburnett/bK.svg','pieces/cburnett/bQ.svg','pieces/cburnett/bR.svg','pieces/cburnett/bB.svg','pieces/cburnett/bN.svg','pieces/cburnett/bP.svg',
+  'pieces/chessnut/wK.svg','pieces/chessnut/wQ.svg','pieces/chessnut/wR.svg','pieces/chessnut/wB.svg','pieces/chessnut/wN.svg','pieces/chessnut/wP.svg','pieces/chessnut/bK.svg','pieces/chessnut/bQ.svg','pieces/chessnut/bR.svg','pieces/chessnut/bB.svg','pieces/chessnut/bN.svg','pieces/chessnut/bP.svg',
+  'pieces/cooke/wK.svg','pieces/cooke/wQ.svg','pieces/cooke/wR.svg','pieces/cooke/wB.svg','pieces/cooke/wN.svg','pieces/cooke/wP.svg','pieces/cooke/bK.svg','pieces/cooke/bQ.svg','pieces/cooke/bR.svg','pieces/cooke/bB.svg','pieces/cooke/bN.svg','pieces/cooke/bP.svg',
+  'pieces/fantasy/wK.svg','pieces/fantasy/wQ.svg','pieces/fantasy/wR.svg','pieces/fantasy/wB.svg','pieces/fantasy/wN.svg','pieces/fantasy/wP.svg','pieces/fantasy/bK.svg','pieces/fantasy/bQ.svg','pieces/fantasy/bR.svg','pieces/fantasy/bB.svg','pieces/fantasy/bN.svg','pieces/fantasy/bP.svg',
+  'pieces/firi/wK.svg','pieces/firi/wQ.svg','pieces/firi/wR.svg','pieces/firi/wB.svg','pieces/firi/wN.svg','pieces/firi/wP.svg','pieces/firi/bK.svg','pieces/firi/bQ.svg','pieces/firi/bR.svg','pieces/firi/bB.svg','pieces/firi/bN.svg','pieces/firi/bP.svg',
+  'pieces/governor/wK.svg','pieces/governor/wQ.svg','pieces/governor/wR.svg','pieces/governor/wB.svg','pieces/governor/wN.svg','pieces/governor/wP.svg','pieces/governor/bK.svg','pieces/governor/bQ.svg','pieces/governor/bR.svg','pieces/governor/bB.svg','pieces/governor/bN.svg','pieces/governor/bP.svg',
+  'pieces/kiwen-suwi/wK.svg','pieces/kiwen-suwi/wQ.svg','pieces/kiwen-suwi/wR.svg','pieces/kiwen-suwi/wB.svg','pieces/kiwen-suwi/wN.svg','pieces/kiwen-suwi/wP.svg','pieces/kiwen-suwi/bK.svg','pieces/kiwen-suwi/bQ.svg','pieces/kiwen-suwi/bR.svg','pieces/kiwen-suwi/bB.svg','pieces/kiwen-suwi/bN.svg','pieces/kiwen-suwi/bP.svg',
+  'pieces/leipzig/wK.svg','pieces/leipzig/wQ.svg','pieces/leipzig/wR.svg','pieces/leipzig/wB.svg','pieces/leipzig/wN.svg','pieces/leipzig/wP.svg','pieces/leipzig/bK.svg','pieces/leipzig/bQ.svg','pieces/leipzig/bR.svg','pieces/leipzig/bB.svg','pieces/leipzig/bN.svg','pieces/leipzig/bP.svg',
+  'pieces/letter/wK.svg','pieces/letter/wQ.svg','pieces/letter/wR.svg','pieces/letter/wB.svg','pieces/letter/wN.svg','pieces/letter/wP.svg','pieces/letter/bK.svg','pieces/letter/bQ.svg','pieces/letter/bR.svg','pieces/letter/bB.svg','pieces/letter/bN.svg','pieces/letter/bP.svg',
+  'pieces/maestro/wK.svg','pieces/maestro/wQ.svg','pieces/maestro/wR.svg','pieces/maestro/wB.svg','pieces/maestro/wN.svg','pieces/maestro/wP.svg','pieces/maestro/bK.svg','pieces/maestro/bQ.svg','pieces/maestro/bR.svg','pieces/maestro/bB.svg','pieces/maestro/bN.svg','pieces/maestro/bP.svg',
+  'pieces/merida/wK.svg','pieces/merida/wQ.svg','pieces/merida/wR.svg','pieces/merida/wB.svg','pieces/merida/wN.svg','pieces/merida/wP.svg','pieces/merida/bK.svg','pieces/merida/bQ.svg','pieces/merida/bR.svg','pieces/merida/bB.svg','pieces/merida/bN.svg','pieces/merida/bP.svg',
+  'pieces/mono/wK.svg','pieces/mono/wQ.svg','pieces/mono/wR.svg','pieces/mono/wB.svg','pieces/mono/wN.svg','pieces/mono/wP.svg','pieces/mono/bK.svg','pieces/mono/bQ.svg','pieces/mono/bR.svg','pieces/mono/bB.svg','pieces/mono/bN.svg','pieces/mono/bP.svg',
+  'pieces/rhosgfx/wK.svg','pieces/rhosgfx/wQ.svg','pieces/rhosgfx/wR.svg','pieces/rhosgfx/wB.svg','pieces/rhosgfx/wN.svg','pieces/rhosgfx/wP.svg','pieces/rhosgfx/bK.svg','pieces/rhosgfx/bQ.svg','pieces/rhosgfx/bR.svg','pieces/rhosgfx/bB.svg','pieces/rhosgfx/bN.svg','pieces/rhosgfx/bP.svg',
+  'pieces/staunty/wK.svg','pieces/staunty/wQ.svg','pieces/staunty/wR.svg','pieces/staunty/wB.svg','pieces/staunty/wN.svg','pieces/staunty/wP.svg','pieces/staunty/bK.svg','pieces/staunty/bQ.svg','pieces/staunty/bR.svg','pieces/staunty/bB.svg','pieces/staunty/bN.svg','pieces/staunty/bP.svg',
+  'pieces/tatiana/wK.svg','pieces/tatiana/wQ.svg','pieces/tatiana/wR.svg','pieces/tatiana/wB.svg','pieces/tatiana/wN.svg','pieces/tatiana/wP.svg','pieces/tatiana/bK.svg','pieces/tatiana/bQ.svg','pieces/tatiana/bR.svg','pieces/tatiana/bB.svg','pieces/tatiana/bN.svg','pieces/tatiana/bP.svg'
 ];
 
 self.addEventListener('install', e => {
