@@ -260,7 +260,28 @@ function updateStatus() {
   }
 }
 
-function update() { renderBoard(); updateStatus(); }
+function save() {
+  localStorage.setItem('chess', JSON.stringify({ pgn: game.pgn(), playerColor, engineDepth }));
+}
+
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem('chess'));
+    if (d && d.pgn) {
+      game.load_pgn(d.pgn);
+      playerColor = d.playerColor || 'w';
+      engineDepth = d.engineDepth || 3;
+      flipped = playerColor === 'b';
+      document.getElementById('player-color').value = playerColor;
+      document.getElementById('difficulty').value = engineDepth;
+      const h = game.history({ verbose: true });
+      lastMove = h.length ? { from: h[h.length-1].from, to: h[h.length-1].to } : null;
+      if (!game.game_over() && game.turn() !== playerColor) engineMove();
+    }
+  } catch(e) {}
+}
+
+function update() { renderBoard(); updateStatus(); save(); }
 
 function onClick(sq) {
   if (thinking || game.game_over() || game.turn() !== playerColor) return;
@@ -371,6 +392,7 @@ function newGame() {
   document.getElementById('thinking-text').textContent = '';
   playerColor = document.getElementById('player-color').value;
   flipped = playerColor === 'b';
+  localStorage.removeItem('chess');
   update();
   if (playerColor === 'b') engineMove();
 }
@@ -384,6 +406,7 @@ function undoMove() {
   update();
 }
 
+load();
 update();
 </script>
 </body>
