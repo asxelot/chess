@@ -125,15 +125,6 @@ body {
 #toolbar button:hover { background: #f0f0f0; }
 #toolbar button:active { background: #e5e5e5; }
 
-#toolbar select {
-  padding: 6px 8px;
-  background: #fff;
-  color: #333;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
 #thinking-text {
   font-size: 13px;
   color: #999;
@@ -171,6 +162,52 @@ body {
 }
 .promo-piece:hover { background: #e8e8e8; transform: scale(1.08); }
 .promo-piece img { width: 48px; height: 48px; }
+
+/* New game popup */
+#newgame-popup {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.3);
+  z-index: 90;
+  justify-content: center;
+  align-items: center;
+}
+#newgame-popup.active { display: flex; }
+#newgame-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+#newgame-content h3 { font-size: 15px; font-weight: 600; color: #333; text-align: center; }
+.ng-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.ng-row label { font-size: 13px; color: #555; }
+.ng-row select {
+  padding: 6px 10px;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  flex: 1;
+}
+#newgame-content button.ng-start {
+  padding: 10px;
+  background: #4a7c59;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+#newgame-content button.ng-start:hover { background: #3d6b4a; }
 
 /* Settings popup */
 #settings-popup {
@@ -219,20 +256,33 @@ body {
   <div id="board"></div>
   <div id="thinking-text"></div>
   <div id="toolbar">
-    <button onclick="newGame()">New</button>
+    <button onclick="showNewGame()">New</button>
     <button onclick="undoMove()">Undo</button>
-    <select id="difficulty" onchange="engineDepth=+this.value">
-      <option value="1">Beginner</option>
-      <option value="2">Easy</option>
-      <option value="3" selected>Medium</option>
-      <option value="4">Hard</option>
-      <option value="5">Expert</option>
-    </select>
-    <select id="player-color" onchange="newGame()">
-      <option value="w" selected>White</option>
-      <option value="b">Black</option>
-    </select>
     <button onclick="toggleSettings()" title="Settings" style="padding:6px 10px;font-size:16px;line-height:1">&#9881;</button>
+  </div>
+</div>
+
+<div id="newgame-popup">
+  <div id="newgame-content">
+    <h3>New Game</h3>
+    <div class="ng-row">
+      <label>Play as</label>
+      <select id="player-color">
+        <option value="w" selected>White</option>
+        <option value="b">Black</option>
+      </select>
+    </div>
+    <div class="ng-row">
+      <label>Difficulty</label>
+      <select id="difficulty">
+        <option value="1">Beginner</option>
+        <option value="2">Easy</option>
+        <option value="3" selected>Medium</option>
+        <option value="4">Hard</option>
+        <option value="5">Expert</option>
+      </select>
+    </div>
+    <button class="ng-start" onclick="startNewGame()">Start</button>
   </div>
 </div>
 
@@ -323,8 +373,6 @@ function load() {
       engineDepth = d.engineDepth || 3;
       pieceSet = d.pieceSet || 'cburnett';
       flipped = playerColor === 'b';
-      document.getElementById('player-color').value = playerColor;
-      document.getElementById('difficulty').value = engineDepth;
       const h = game.history({ verbose: true });
       lastMove = h.length ? { from: h[h.length-1].from, to: h[h.length-1].to } : null;
       if (!game.game_over() && game.turn() !== playerColor) engineMove();
@@ -437,11 +485,19 @@ function engineMove() {
   }, 50);
 }
 
-function newGame() {
+function showNewGame() {
+  document.getElementById('player-color').value = playerColor;
+  document.getElementById('difficulty').value = engineDepth;
+  document.getElementById('newgame-popup').classList.add('active');
+}
+
+function startNewGame() {
+  document.getElementById('newgame-popup').classList.remove('active');
   game = new Chess();
   selected = null; legalMoves = []; lastMove = null; thinking = false;
   document.getElementById('thinking-text').textContent = '';
   playerColor = document.getElementById('player-color').value;
+  engineDepth = +document.getElementById('difficulty').value;
   flipped = playerColor === 'b';
   localStorage.removeItem('chess');
   update();
@@ -489,6 +545,7 @@ function initSettings() {
     container.appendChild(opt);
   }
   document.getElementById('settings-popup').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
+  document.getElementById('newgame-popup').addEventListener('click', function(e) { if (e.target === this) this.classList.remove('active'); });
 }
 
 load();
